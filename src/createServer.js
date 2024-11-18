@@ -31,7 +31,7 @@ function createServer() {
     if (validFileRequestPrefixes.includes(normalizedUrl)) {
       endOfPath = defaultFilePath;
     } else {
-      endOfPath = normalizedUrl.replace('file', defaultDirectoryName);
+      endOfPath = normalizedUrl.replace(/^\/file/, `/${defaultDirectoryName}`);
     }
 
     const resolvedPath = path.join(__dirname, '..', endOfPath);
@@ -39,7 +39,8 @@ function createServer() {
     fs.readFile(resolvedPath, (err, data) => {
       if (err) {
         res.statusCode = 404;
-        res.end('No such file');
+
+        return res.end('No such file');
       }
 
       res.statusCode = 200;
